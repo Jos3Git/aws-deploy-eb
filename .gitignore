@@ -1,0 +1,8 @@
+tmp-angular/node-modules/
+tmp-angular/dist/
+tmp-api/node-modules/
+.idea/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

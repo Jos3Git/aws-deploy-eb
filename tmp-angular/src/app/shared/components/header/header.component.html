@@ -1,0 +1,24 @@
+<div class="header">
+    <div class="header--wrapper">
+        <button class="upgrade-account btn-default">Mejorar tu cuenta</button>
+        <ng-container *ngTemplateOutlet="btnProfile"></ng-container>
+    </div>
+</div>
+
+<!-- TEMPLATE Button Profile-->
+<ng-template #btnProfile>
+    <div class="profile-account-wrapper">
+        <button class="profile-account btn-default">
+            <img src="https://avatars.githubusercontent.com/u/15802366?v=4" alt="Leifer Mendez" class="avatar">
+            <span class="name-account">Leifer Jesus Mendez Zambrano</span>
+        </button>
+
+        <ng-container *ngIf="false">
+            <div class="profile--menu">
+                <ul class="profile--options">
+                    <li *ngFor="let option of [1,1,1,1]">Link</li>
+                </ul>
+            </div>
+        </ng-container>
+    </div>
+</ng-template>

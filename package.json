@@ -1,0 +1,20 @@
+{
+  "name": "angular-basico",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/leifermendez/aws-deploy-eb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/leifermendez/aws-deploy-eb/issues"
+  },
+  "homepage": "https://gitlab.com/leifermendez/aws-deploy-eb#readme"
+}

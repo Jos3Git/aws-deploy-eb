@@ -1,0 +1,97 @@
+stages:
+  - install
+  - test
+  - build
+  - deploy
+
+install_dependencies_front:
+  stage: install
+  image: node:12-alpine
+  script:
+    - cd ./tmp-angular
+    - npm install
+  only:
+    - master
+  cache:
+    paths:
+      - ./tmp-angular/node_modules
+    key:
+      files:
+        - ./tmp-angular/package-lock.json
+
+build_app:
+  image: node:12-alpine
+  stage: build
+  script:
+    - cd ./tmp-angular
+    - npm link @angular/cli@12.2.0
+    - npm run build
+  artifacts:
+    paths:
+      - $CI_PROJECT_DIR/tmp-angular/dist
+  only:
+    - master
+  cache:
+    key:
+      files:
+        - ./tmp-angular/package-lock.json
+    paths:
+      - ./tmp-angular/node_modules
+      - $CI_PROJECT_DIR/tmp-angular/dist
+    policy: pull
+
+test_stage:
+  image: markhobson/node-chrome:latest
+  stage: test
+  script:
+    - cd ./tmp-angular
+    - npm link @angular/cli@12.2.0
+    - npm test -- --browsers=ChromeHeadless --watch=false
+  cache:
+    key:
+      files:
+        - ./tmp-angular/package-lock.json
+    paths:
+      - ./tmp-angular/node_modules
+    policy: pull
+  only:
+    - master
+
+deploy-front:
+  stage: deploy
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""]
+  script:
+    - aws --version
+    - aws configure set region us-east-2
+    - aws s3 sync ./tmp-angular/dist/tmp-angular s3://leifer-landing-page --acl public-read
+  cache:
+    paths:
+      - $CI_PROJECT_DIR/tmp-angular/dist
+    policy: pull
+  only:
+    - master
+
+deploy-backend:
+  stage: deploy
+  image: coxauto/aws-ebcli
+  before_script:
+    - cd ./tmp-api
+    - touch test.txt
+    - git init
+    - git config user.name "Leifer Mendez"
+    - git config user.email "leifer33@gmail.com"
+    - git config --global init.defaultBranch master
+    - git add . && git commit -m "$CI_COMMIT_MESSAGE"
+  script:
+    - touch ~/.aws/credentials
+    - printf "[eb-cli]\naws_access_key_id = %s\naws_secret_access_key = %s\n" "$EB_FRONT_KEY_ID" "$EB_FRONT_SECRET_KEY" >> ~/.aws/credentials
+    - touch ~/.aws/config
+    - printf "[profile eb-cli]\nregion=us-east-2\noutput=json" >> ~/.aws/config
+    - eb init Spotify -p Node.js -r us-east-2
+    - eb use Spotify-env
+    - eb deploy Spotify-env -m "$CI_COMMIT_MESSAGE" --timeout 60
+  only:
+    - master
+

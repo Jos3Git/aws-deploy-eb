@@ -1,0 +1,5 @@
+<div class="history-page">
+    <app-search (cbData)="catchData($event)"></app-search>
+    <app-play-list-body [tracks]="data$ | async "></app-play-list-body>
+
+</div>
